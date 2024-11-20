@@ -11,11 +11,11 @@ import { useAuth } from "../contexts/AuthProvider";
 
 function LoginPage() {
   const [values, setValues] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   });
   const navigate = useNavigate();
-  const { user, login } = useAuth();
+  const { user, login, kakaoLogin } = useAuth();
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -30,12 +30,12 @@ function LoginPage() {
     e.preventDefault();
     const { email, password } = values;
     await login({ email, password });
-    navigate("/me");
+    navigate('/me');
   }
 
   useEffect(() => {
     if (user) {
-      navigate("/me");
+      navigate('/me');
     }
   }, [user, navigate]);
 
@@ -75,6 +75,7 @@ function LoginPage() {
           appearance="outline"
           as={Link}
           /** @TODO 카카오 로그인 구현 */
+          onClick={kakaoLogin}
         >
           <img src={KakaoImage} alt="Kakao" />
           카카오로 시작하기

@@ -8,6 +8,8 @@ const AuthContext = createContext({
   login: () => {},
   logout: () => {},
   updateMe: () => {},
+  kakaoLogin: () => {},      // 카카오 로그인
+  refreshToken: () => {},    // 토큰 재발급 함수
 });
 
 export function AuthProvider({ children }) {
@@ -16,8 +18,6 @@ export function AuthProvider({ children }) {
     isPending: true,
   });
 
-  const navigate = useNavigate();
-
   async function getMe() {
     setValues((prevValues) => ({
       ...prevValues,
@@ -25,7 +25,8 @@ export function AuthProvider({ children }) {
     }));
     let nextUser;
     try {
-      const res = await axios.get("/users/me");
+      const res = await axios.get("/api/member");
+      // 서버에서 name, email 등을 반환해줘야 함.
       nextUser = res.data;
     } finally {
       setValues((prevValues) => ({
@@ -37,11 +38,28 @@ export function AuthProvider({ children }) {
   }
 
   async function login({ email, password }) {
-    await axios.post("/auth/login", {
+    await axios.post("/api/auth/login", {
       email,
       password,
     });
     await getMe();
+  }
+
+  async function kakaoLogin() {
+    // 카카오 로그인 URL로 redirect
+    window.location.href = "/oauth2/authorization/kakao";
+  }
+
+  async function refreshToken() {
+    try {
+      const res = await axios.get("/api/auth/refresh", { withCredentials: true });
+      const newToken = res.data.token;
+      localStorage.setItem("token", newToken);    // 새로운 토큰 로컬에 저장
+      await getMe();    // 새 토큰으로 사용자 정보 불러오기
+    } catch (error) {
+      console.error("Failed to refresh token: ", error);
+      logout();    // 재발급 실패하면 로그아웃
+    }
   }
 
   async function logout() {
@@ -52,12 +70,11 @@ export function AuthProvider({ children }) {
         user: null,
         isPending: false,
       });
-      navigate("/"); // 루트 경로로 리다이렉트
     }
   }
 
   async function updateMe(formData) {
-    const res = await axios.patch("/users/me", formData);
+    const res = await axios.put("/api/member", formData);
     const nextUser = res.data;
     setValues((prevValues) => ({
       ...prevValues,
@@ -77,6 +94,8 @@ export function AuthProvider({ children }) {
         login,
         logout,
         updateMe,
+        kakaoLogin,
+        refreshToken,
       }}
     >
       {children}
@@ -94,7 +113,7 @@ export function useAuth(required) {
 
   useEffect(() => {
     if (required && !context.user && !context.isPending) {
-      navigate("/");
+      navigate("/login");
     }
   }, [context.user, context.isPending, navigate, required]);
 
