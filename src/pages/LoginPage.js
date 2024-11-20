@@ -15,7 +15,7 @@ function LoginPage() {
     password: '',
   });
   const navigate = useNavigate();
-  const { user, login, kakaoLogin } = useAuth();
+  const { user, login, kakaoLogin, handleKakaoRedirect, getMe } = useAuth();
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -29,8 +29,14 @@ function LoginPage() {
   async function handleSubmit(e) {
     e.preventDefault();
     const { email, password } = values;
-    await login({ email, password });
-    navigate('/me');
+
+    try {
+      await login({ email, password });
+      navigate('/me');
+    } catch (error) {
+      console.error("로그인 실패", error);
+      alert("로그인에 실패했습니다. 이메일과 비밀번호를 확인해주세요.");
+    }
   }
 
   useEffect(() => {
@@ -38,6 +44,14 @@ function LoginPage() {
       navigate('/me');
     }
   }, [user, navigate]);
+
+  useEffect(() => {
+    if (window.location.pathname === "/login/oauth2/code/kakao") {
+      handleKakaoRedirect();
+    } else {
+      getMe();
+    }
+  }, []);
 
   return (
     <>

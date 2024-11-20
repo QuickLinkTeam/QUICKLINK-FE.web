@@ -50,6 +50,36 @@ export function AuthProvider({ children }) {
     window.location.href = "/oauth2/authorization/kakao";
   }
 
+  // 카카오 인증 결과 처리
+  async function handleKakaoRedirect() {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const authCode = urlParams.get("code");
+
+    if (!authCode) {
+      console.error("카카오 인증 코드가 없습니다.");
+      return;
+    }
+
+    try {
+      // 백엔드로 인증 코드 전달
+      const res = await axios.get(`/api/auth/kakao/callback?code=${authCode}`);
+      const { token, user } =  res.data;
+
+      localStorage.setItem("token", token);
+
+      // 사용자 정보 업데이트
+      setValues({
+        user: user,
+        isPending: false,
+      });
+    } catch (error) {
+      console.error("카카오 인증 실패", error);
+    }
+  }
+
+
+
   async function refreshToken() {
     try {
       const res = await axios.get("/api/auth/refresh", { withCredentials: true });

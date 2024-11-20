@@ -20,7 +20,7 @@ function RegisterPage() {
   });
   const navigate = useNavigate();
   const toast = useToaster();
-  const { user, login } = useAuth();
+  const { user, login, kakaoLogin } = useAuth();
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -39,7 +39,7 @@ function RegisterPage() {
       return;
     }
     const { name, email, password } = values;
-    await axios.post("/users", {
+    await axios.post("/api/auth/signup", {
       name,
       email,
       password,
@@ -57,7 +57,7 @@ function RegisterPage() {
   return (
     <>
       <h1 className={styles.Heading}>회원가입</h1>
-      <Button className={styles.KakaoButton} type="button" appearance="outline">
+      <Button className={styles.KakaoButton} type="button" appearance="outline" onClick={kakaoLogin}>
         <img src={KakaoImage} alt="Kakao" />
         카카오로 시작하기
       </Button>
