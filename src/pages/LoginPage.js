@@ -15,7 +15,7 @@ function LoginPage() {
     password: '',
   });
   const navigate = useNavigate();
-  const { user, login, kakaoLogin, handleKakaoRedirect, getMe } = useAuth();
+  const { user, login, kakaoLogin, handleKakaoRedirect } = useAuth();
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -48,10 +48,8 @@ function LoginPage() {
   useEffect(() => {
     if (window.location.pathname === "/login/oauth2/code/kakao") {
       handleKakaoRedirect();
-    } else {
-      getMe();
     }
-  }, []);
+  }, [handleKakaoRedirect]);
 
   return (
     <>
