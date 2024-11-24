@@ -130,6 +130,12 @@ export function AuthProvider({ children }) {
     }
   }
 
+  // 토큰 설정 메소드 추가
+  function setTokens({ accessToken, refreshToken }) {
+    localStorage.setItem('accessToken', accessToken);
+    localStorage.setItem('refreshToken', refreshToken);
+  }
+
   useEffect(() => {
     getMe(); // 초기 로드 시 사용자 정보 가져오기
   }, []);
@@ -143,6 +149,7 @@ export function AuthProvider({ children }) {
         signup,
         logout,
         updateMe, // 추가
+        setTokens, 
       }}
     >
       {children}

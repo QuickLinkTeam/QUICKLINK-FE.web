@@ -67,7 +67,14 @@ function RegisterPage() {
   return (
     <>
       <h1 className={styles.Heading}>회원가입</h1>
-      <Button className={styles.KakaoButton} type="button" appearance="outline">
+        <Button
+        className={styles.KakaoButton}
+        type="button"
+        appearance="outline"
+        onClick={() => {
+          window.location.href = `${axios.defaults.baseURL}/oauth2/authorization/kakao`;
+        }}
+      >
         <img src={KakaoImage} alt="Kakao" />
         카카오로 시작하기
       </Button>

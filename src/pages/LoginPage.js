@@ -8,6 +8,7 @@ import Link from "../components/Link";
 import KakaoImage from "../assets/kakao.svg";
 import styles from "./LoginPage.module.css";
 import { useAuth } from "../contexts/AuthProvider";
+import axios from "../lib/axios";
 
 function LoginPage() {
   const [values, setValues] = useState({
@@ -73,8 +74,9 @@ function LoginPage() {
           className={styles.KakaoButton}
           type="button"
           appearance="outline"
-          as={Link}
-          /** @TODO 카카오 로그인 구현 */
+          onClick={() => {
+            window.location.href = `${axios.defaults.baseURL}/oauth2/authorization/kakao`;
+          }}
         >
           <img src={KakaoImage} alt="Kakao" />
           카카오로 시작하기
