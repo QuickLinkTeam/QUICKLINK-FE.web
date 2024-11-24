@@ -9,6 +9,7 @@ const AuthContext = createContext({
   signup: () => {},
   logout: () => {},
   updateMe: () => {}, // 추가
+  setTokens: () => {},
 });
 
 export function AuthProvider({ children }) {
