@@ -1,4 +1,5 @@
-import { useState } from "react"; // useState 추가
+// src/Main.js
+import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import App from "./components/App";
 import {
@@ -16,26 +17,24 @@ import UserPage from "./pages/UserPage";
 import SettingPage from "./pages/SettingPage";
 import CreateLinkPage from "./pages/CreateLinkPage";
 import EditLinkPage from "./pages/EditLinkPage";
-import Nav from "./components/Nav"; // Nav 컴포넌트 추가
-import BottomNav from "./components/BottomNav"; // BottomNav 컴포넌트 추가
+import Nav from "./components/Nav";
+import BottomNav from "./components/BottomNav";
 import { AuthProvider } from "./contexts/AuthProvider";
-import ProtectedRoute from "./components/ProtectedRoute";
+import KakaoRedirectHandler from "./contexts/KakaoRedirectHandler";
 
 function Main() {
-  const [searchTerm, setSearchTerm] = useState(""); // 검색어 상태 추가
+  const [searchTerm, setSearchTerm] = useState("");
 
   return (
     <BrowserRouter>
       <AuthProvider>
         <App>
-          {/* Nav 컴포넌트는 App에 포함하여 모든 페이지에 상단바로 고정 */}
           <Nav onSearch={setSearchTerm} />
           <Routes>
             <Route element={<LandingLayout />}>
               <Route index element={<HomePage />} />
             </Route>
             <Route element={<MyPageLayout />}>
-              {/* 검색어를 MyPage로 전달 */}
               <Route path="me" element={<MyPage searchTerm={searchTerm} />} />
               <Route path="me/info" element={<MePage />} />
             </Route>
@@ -45,12 +44,14 @@ function Main() {
               <Route path="me/links/:linkId/edit" element={<EditLinkPage />} />
               <Route path="login" element={<LoginPage />} />
               <Route path="register" element={<RegisterPage />} />
+              {/* KakaoRedirectHandler를 위한 라우트 추가 */}
+              <Route path="oauth/kakao" element={<KakaoRedirectHandler />} />
             </Route>
             <Route element={<UserLayout />}>
               <Route path=":userId" element={<UserPage />} />
             </Route>
           </Routes>
-          <BottomNav /> {/* 하단 BottomNav 컴포넌트 추가 */}
+          <BottomNav />
         </App>
       </AuthProvider>
     </BrowserRouter>

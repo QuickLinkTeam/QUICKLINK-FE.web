@@ -4,6 +4,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL; // .env 파일에서 BASE_URL �
 
 const instance = axios.create({
   baseURL: `${BASE_URL}`, // http://<IP주소>/api
+  withCredentials: true,  // 쿠키 전송을 위해 추가(세션)
 });
 
 // 요청 인터셉터: Authorization 헤더에 Bearer 토큰 추가
